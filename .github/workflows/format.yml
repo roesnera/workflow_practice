@@ -1,0 +1,25 @@
+name: Strict Format
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_call:
+
+jobs:
+  run-formatter:
+    name: Run formatter
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v4
+
+      # Prettier must be in `package.json`
+      - name: Install Node.js dependencies
+        env:
+          GITHUB_PERSONAL_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npm ci
+
+      - name: Check Format
+        run: npm run format:check
