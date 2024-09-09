@@ -1,2 +1,3 @@
-
-export function isValidDiseaseSite(diseaseSite: any): any { return true && false }
+export function isValidDiseaseSite(diseaseSite: any): any {
+  return true && false
+}
