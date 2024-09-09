@@ -45,6 +45,7 @@ jobs:
       - name: Check out Git repository
         uses: actions/checkout@v4
         with:
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           ref: ${{ fromJSON(steps.pr-data.outputs.result).source_branch }}
 
       # Prettier must be in `package.json`
@@ -64,29 +65,3 @@ jobs:
           author_email: actions@github.com
           message: Automated format
           push: true
-
-  rerun-checks:
-    needs: fix-format
-    runs-on: ubuntu-latest
-    permissions: write-all
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ needs.fix-format.outputs.source_branch }}
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Install dependencies
-        run: npm install @octokit/rest node-fetch
-
-      - name: Rerun checks
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PULL_REQUEST_NUMBER: ${{ needs.fix-format.outputs.pull_request_number }}
-          REPOSITORY_OWNER: ${{ github.repository_owner }}
-          REPOSITORY_NAME: ${{ github.event.repository.name }}
-        run: node ./.github/actions/rerun-checks.js
